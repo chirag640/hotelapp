@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -192,6 +193,24 @@ public RedirectView confirmBooking(HttpSession session, RedirectAttributes redir
         model.addAttribute("bookingDTO", bookingDTO);
 
         return "booking/confirmation";
+    }
+
+    @GetMapping("/refund/{transactionId}")
+    public String refundPayment(@PathVariable String transactionId, RedirectAttributes redirectAttributes) {
+        try {
+            paymentService.refundPayment(transactionId);
+            redirectAttributes.addFlashAttribute("message", "Refund processed successfully.");
+            return "redirect:/booking/refund-success";
+        } catch (Exception e) {
+            log.error("Error occurred while processing refund for transaction ID: {}", transactionId, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while processing the refund. Please try again.");
+            return "redirect:/customer/bookings";
+        }
+    }
+
+    @GetMapping("/refund-success")
+    public String showRefundSuccessPage() {
+        return "booking/refund-success";
     }
 
     private Long getLoggedInUserId() {

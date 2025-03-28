@@ -55,6 +55,12 @@ public class CustomerController {
         try {
             Long customerId = getCurrentCustomerId();
             BookingDTO bookingDTO = bookingService.findBookingByIdAndCustomerId(id, customerId);
+
+            // Ensure transactionId is set
+            if (bookingDTO.getTransactionId() == null) {
+                log.warn("Transaction ID is null for booking ID: {}", id);
+            }
+
             model.addAttribute("bookingDTO", bookingDTO);
 
             LocalDate checkinDate = bookingDTO.getCheckinDate();

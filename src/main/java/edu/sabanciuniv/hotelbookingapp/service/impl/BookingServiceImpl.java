@@ -84,9 +84,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDTO findBookingByIdAndCustomerId(Long bookingId, Long customerId) {
-        Booking booking = bookingRepository.findBookingByIdAndCustomerId(bookingId, customerId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
-        return mapBookingModelToBookingDto(booking);
+        Booking booking = bookingRepository.findByIdAndCustomerId(bookingId, customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found for ID: " + bookingId));
+
+        BookingDTO bookingDTO = mapBookingModelToBookingDto(booking);
+
+        // Set the transactionId from the associated payment
+        if (booking.getPayment() != null) {
+            bookingDTO.setTransactionId(booking.getPayment().getTransactionId());
+        }
+
+        return bookingDTO;
     }
 
     @Override
