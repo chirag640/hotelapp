@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Complete Payment</title>
+    <style>
+        /* PayPal-style button */
+        .paypal-button {
+            background-color: #009cde;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .paypal-button:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <h2 class="text-center">Complete Your Booking</h2>
+        <hr>
+        <!-- Booking Details -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>Hotel Details</h4>
+                <p><strong th:text="${hotelDTO.name}">Hotel Name</strong></p>
+                <p th:text="${hotelDTO.addressDTO.getAddressLine()}">Address Line</p>
+                <p th:text="${hotelDTO.addressDTO.city + ', ' + hotelDTO.addressDTO.country}">City, Country</p>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>Booking Information</h4>
+                <p><strong>Check-in:</strong> <span th:text="${bookingInitiationDTO.checkinDate}"></span></p>
+                <p><strong>Check-out:</strong> <span th:text="${bookingInitiationDTO.checkoutDate}"></span></p>
+                <p><strong>Duration:</strong> <span th:text="${bookingInitiationDTO.durationDays}"></span> nights</p>
+                <h5>Selected Rooms</h5>
+                <div th:each="roomSelection : ${bookingInitiationDTO.roomSelections}" th:if="${roomSelection.count > 0}">
+                    <p th:text="${roomSelection.count + ' x ' + roomSelection.roomType}"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4>Total Price:</h4>
+                <h3 th:utext="'$ ' + ${#numbers.formatDecimal(bookingInitiationDTO.totalPrice, 0, 'COMMA', 2, 'POINT')}"></h3>
+            </div>
+        </div>
+        
+        <!-- Complete Booking Button -->
+        <div class="text-center">
+            <form action="/booking/payment" method="post">
+                <button type="submit" class="btn paypal-button">Pay with paypal</button>
+            </form>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
