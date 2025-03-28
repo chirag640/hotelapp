@@ -172,5 +172,9 @@ public class PaymentServiceImpl implements PaymentService {
 
         Refund refundedSale = sale.refund(apiContext, refund);
         log.info("Refund successful. Refund ID: {}", refundedSale.getId());
+
+        // Update payment status to REFUNDED
+        payment.setPaymentStatus(PaymentStatus.REFUNDED);
+        paymentRepository.save(payment);
     }
 }

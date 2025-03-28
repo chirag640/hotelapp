@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.PaymentStatus;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -155,6 +157,7 @@ public class BookingServiceImpl implements BookingService {
                 .customerEmail(customerUser.getUsername())
                 .paymentStatus(booking.getPayment().getPaymentStatus())
                 .paymentMethod(booking.getPayment().getPaymentMethod())
+                .refunded(booking.getPayment() != null && booking.getPayment().getPaymentStatus() == PaymentStatus.REFUNDED)
                 .build();
     }
 

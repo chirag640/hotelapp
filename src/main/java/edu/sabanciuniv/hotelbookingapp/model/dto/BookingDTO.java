@@ -35,6 +35,7 @@ public class BookingDTO {
     private PaymentStatus paymentStatus;
     private PaymentMethod paymentMethod;
     private String transactionId;
+    private boolean refunded;
 
     public String getTransactionId() {
         return transactionId;
@@ -42,6 +43,14 @@ public class BookingDTO {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public boolean isRefunded() {
+        return refunded;
+    }
+
+    public void setRefunded(boolean refunded) {
+        this.refunded = refunded;
     }
     
 }
