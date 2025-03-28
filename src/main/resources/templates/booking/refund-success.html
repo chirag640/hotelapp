@@ -1,13 +1,46 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
 <head>
     <title>Refund Success</title>
+    <style>
+        /* Styling for the refund success page */
+        .refund-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .refund-container h1 {
+            color: #28a745; /* Success green */
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .refund-container p {
+            font-size: 1.2rem;
+            color: #6c757d; /* Muted text */
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+<th:block layout:fragment="content">
+    <div class="container refund-container">
         <h1>Refund Successful</h1>
-        <p>Your refund has been processed successfully.</p>
+        <p>Your refund has been processed successfully. If you have any questions, please contact support.</p>
         <a href="/customer/bookings" class="btn btn-primary">Back to Bookings</a>
     </div>
+</th:block>
 </body>
 </html>
