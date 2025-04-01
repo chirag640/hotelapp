@@ -2,40 +2,56 @@ package edu.sabanciuniv.hotelbookingapp.model.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HotelDTO {
-
-    private Long id;
-
-    @NotBlank(message = "Hotel name cannot be empty")
-    @Pattern(regexp = "^(?!\\s*$)[A-Za-z0-9 ]+$", message = "Hotel name must only contain letters and numbers")
-    private String name;
-
-    @Valid
-    private AddressDTO addressDTO;
-
-    @Valid
-    private List<RoomDTO> roomDTOs = new ArrayList<>();
-
-    private String managerUsername;
     
-    private double pricePerNight;
-
-    // ✅ Getter for pricePerNight (Lombok's @Data should generate it, but ensure it's there)
+    private Long id;
+    
+    @NotBlank(message = "Hotel name cannot be empty")
+    private String name;
+    
+    @Valid
+    @NotNull(message = "Address cannot be null")
+    private AddressDTO addressDTO;
+    
+    @Valid
+    @Builder.Default
+    private List<RoomDTO> roomDTOs = new ArrayList<>();
+    
+    private String managerName;
+    
+    private Long managerId;
+    
+    // Method to ensure roomDTOs is never null
+    public List<RoomDTO> getRoomDTOs() {
+        if (roomDTOs == null) {
+            roomDTOs = new ArrayList<>();
+        }
+        return roomDTOs;
+    }
+    
+    // Method to calculate the price per night based on the first room type available
+    // Used in the BookingController
     public double getPricePerNight() {
-        return pricePerNight;
+        if (roomDTOs != null && !roomDTOs.isEmpty()) {
+            return roomDTOs.stream()
+                .filter(room -> room.getRoomCount() > 0)
+                .findFirst()
+                .map(RoomDTO::getPricePerNight)
+                .orElse(0.0);
+        }
+        return 0.0;
     }
-
-    public void setPricePerNight(double pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
 }

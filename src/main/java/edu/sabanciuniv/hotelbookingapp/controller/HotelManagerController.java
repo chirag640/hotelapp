@@ -22,7 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/manager")
@@ -81,6 +83,27 @@ public class HotelManagerController {
     public String showEditHotelForm(@PathVariable Long id, Model model) {
         Long managerId = getCurrentManagerId();
         HotelDTO hotelDTO = hotelService.findHotelByIdAndManagerId(id, managerId);
+        
+        // Ensure roomDTOs is initialized
+        if (hotelDTO.getRoomDTOs() == null) {
+            hotelDTO.setRoomDTOs(new ArrayList<>());
+        }
+        
+        // Make sure we have at least 2 room DTOs (for single and double rooms)
+        while (hotelDTO.getRoomDTOs().size() < 2) {
+            RoomDTO roomDTO = new RoomDTO();
+            roomDTO.setHotelId(id);
+            roomDTO.setRoomCount(0);
+            roomDTO.setPricePerNight(0.0);
+            roomDTO.setRoomType(hotelDTO.getRoomDTOs().isEmpty() ? RoomType.SINGLE : RoomType.DOUBLE);
+            hotelDTO.getRoomDTOs().add(roomDTO);
+        }
+        
+        // Ensure hotelId is set for all room DTOs
+        for (RoomDTO roomDTO : hotelDTO.getRoomDTOs()) {
+            roomDTO.setHotelId(id);
+        }
+        
         model.addAttribute("hotel", hotelDTO);
         return "hotelmanager/hotels-edit";
     }

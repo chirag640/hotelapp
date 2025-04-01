@@ -123,6 +123,13 @@ public class BookingController {
         long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
 
         double pricePerNight = hotelDTO.getPricePerNight();
+        
+        // If no price is available, show an error
+        if (pricePerNight <= 0) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Price information is not available for this hotel. Please try again.");
+            return new RedirectView("/search");
+        }
+        
         double totalPrice = durationDays * pricePerNight;
 
         try {

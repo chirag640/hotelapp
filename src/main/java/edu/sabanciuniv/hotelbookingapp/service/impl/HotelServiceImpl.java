@@ -198,7 +198,8 @@ public class HotelServiceImpl implements HotelService {
                 .name(hotel.getName())
                 .addressDTO(addressDTO)
                 .roomDTOs(roomDTOs)
-                .managerUsername(hotel.getHotelManager().getUser().getUsername())
+                .managerName(hotel.getHotelManager().getUser().getUsername())
+                .managerId(hotel.getHotelManager().getId())
                 .build();
     }
 
