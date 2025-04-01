@@ -21,5 +21,6 @@ public interface PaymentService {
      
     com.paypal.api.payments.Payment excecutePayment(String paymentId, String payerId) throws PayPalRESTException;
 	
+    void refundPayment(String transactionId) throws Exception;
     
 }

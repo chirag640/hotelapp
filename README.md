@@ -66,6 +66,6 @@
    mvn spring-boot:run
    ```
    
-7. Access the application via your browser at http://localhost:8080/.
+7. Access the application via your browser at http://localhost:8081/.
 
 

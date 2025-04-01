@@ -52,6 +52,14 @@
                 </div>
                 <div class="mt-3">
                     <a href="/customer/bookings" class="btn btn-primary">Back to Bookings</a>
+                    <div th:if="${bookingDTO.refunded}">
+                        <p class="text-success">This booking has been refunded.</p>
+                    </div>
+                    <a th:if="${!bookingDTO.refunded && bookingDTO.transactionId != null}" 
+                       th:href="@{'/booking/refund/' + ${bookingDTO.transactionId}}" 
+                       class="btn btn-danger">Request Refund</a>
+                    <button th:if="${!bookingDTO.refunded && bookingDTO.transactionId == null}" 
+                            class="btn btn-danger" disabled>Refund Not Available</button>
                 </div>
             </div>
         </div>

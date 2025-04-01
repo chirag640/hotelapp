@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.PaymentStatus;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -84,9 +86,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDTO findBookingByIdAndCustomerId(Long bookingId, Long customerId) {
-        Booking booking = bookingRepository.findBookingByIdAndCustomerId(bookingId, customerId)
-                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
-        return mapBookingModelToBookingDto(booking);
+        Booking booking = bookingRepository.findByIdAndCustomerId(bookingId, customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found for ID: " + bookingId));
+
+        BookingDTO bookingDTO = mapBookingModelToBookingDto(booking);
+
+        // Set the transactionId from the associated payment
+        if (booking.getPayment() != null) {
+            bookingDTO.setTransactionId(booking.getPayment().getTransactionId());
+        }
+
+        return bookingDTO;
     }
 
     @Override
@@ -147,6 +157,7 @@ public class BookingServiceImpl implements BookingService {
                 .customerEmail(customerUser.getUsername())
                 .paymentStatus(booking.getPayment().getPaymentStatus())
                 .paymentMethod(booking.getPayment().getPaymentMethod())
+                .refunded(booking.getPayment() != null && booking.getPayment().getPaymentStatus() == PaymentStatus.REFUNDED)
                 .build();
     }
 

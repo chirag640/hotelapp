@@ -156,4 +156,25 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    @Override
+    public void refundPayment(String transactionId) throws PayPalRESTException {
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new IllegalArgumentException("Payment not found for transaction ID: " + transactionId));
+
+        Sale sale = new Sale();
+        sale.setId(transactionId);
+
+        Refund refund = new Refund();
+        Amount amount = new Amount();
+        amount.setCurrency(payment.getCurrency().name()); // Use the currency from the payment
+        amount.setTotal(payment.getTotalPrice().toString()); // Use the total price from the payment
+        refund.setAmount(amount);
+
+        Refund refundedSale = sale.refund(apiContext, refund);
+        log.info("Refund successful. Refund ID: {}", refundedSale.getId());
+
+        // Update payment status to REFUNDED
+        payment.setPaymentStatus(PaymentStatus.REFUNDED);
+        paymentRepository.save(payment);
+    }
 }
